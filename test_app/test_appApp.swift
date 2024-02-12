@@ -6,9 +6,21 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 @main
 struct test_appApp: App {
+    init() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { 
+            granted, error in
+            
+            if (granted) {
+                print("granted notifications")
+            }
+            
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
