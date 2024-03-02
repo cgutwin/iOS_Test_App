@@ -25,6 +25,11 @@ struct ContentView: View {
             Button("send notif") {
                 sendNotification()
             }
+            Button("fetchpbp") {
+                NHLEdgePBPFetch().getPbp { data in
+                    return
+                }
+            }
         }
         .padding()
     }
