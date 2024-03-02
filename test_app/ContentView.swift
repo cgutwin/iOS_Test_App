@@ -8,48 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var message = "press to fetch"
+    
     var body: some View {
         VStack {
-            Text("hello notifications!")
-                .onAppear {
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
-                        granted, error in
-                        
-                        if (granted) {
-                            print("granted")
-                        } else {
-                            print("denied")
-                        }
-                    }
-                }
-            Button("send notif") {
-                sendNotification()
+            Text(message)
+                .padding()
+            Button("Fetch Data") {
+                fetchData()
             }
-            Button("fetchpbp") {
-                NHLEdgePBPFetch().getPbp { data in
+        }
+    }
+    
+    func fetchData() {
+        guard let url = URL(string: "https://api-web.nhle.com/v1/gamecenter/2023020818/play-by-play") else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                if let decodedResponse = try? JSONDecoder().decode(NHLEdgePBPDataResponse.self, from: data) {
+                    DispatchQueue.main.async {
+                        self.message = decodedResponse.venue.venue
+                    }
                     return
                 }
             }
-        }
-        .padding()
-    }
-    
-    func sendNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Hello Notifications!"
-        content.body = "Notification Message"
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "notification", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) {
-            error in
-            if let error = error {
-                print("error: \(error)")
-            } else {
-                print("scheduled")
-            }
-        }
+        }.resume()
     }
  }
 

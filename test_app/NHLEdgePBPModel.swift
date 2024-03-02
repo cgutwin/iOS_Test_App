@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NHLEdgePBPModel: Decodable {
+struct NHLEdgePBPDataResponse: Decodable, Equatable {
     let id, season, gameType: Int
     let gameDate: String
     let venue: Venue
@@ -16,7 +16,7 @@ struct NHLEdgePBPModel: Decodable {
     let plays: [Plays]
 }
 
-struct Venue: Decodable {
+struct Venue: Decodable, Equatable {
     let venue: String
     
     enum CodingKeys: String, CodingKey {
@@ -24,12 +24,12 @@ struct Venue: Decodable {
     }
 }
 
-struct PeriodDescriptor: Decodable {
+struct PeriodDescriptor: Decodable, Equatable {
     let number: Int
     let periodType: String
 }
 
-struct Plays: Decodable {
+struct Plays: Decodable, Equatable {
     let eventId, period: Int
     let periodDescriptor: PeriodDescriptor
     let timeInPeriod, timeRemaining, situationCode, homeTeamDefendingSide: String
