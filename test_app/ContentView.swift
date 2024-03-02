@@ -9,14 +9,32 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var message = "press to fetch"
+    @State private var gameid = ""
     
     var body: some View {
-        VStack {
-            Text(message)
-                .padding()
-            Button("Fetch Data") {
-                fetchData()
+        ScrollView {
+            VStack(alignment: .leading) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("NHL Edge API")
+                            .font(.largeTitle)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .clipped()
+                        Text("Game ID: \(gameid)")
+                    }
+                    .padding(.leading)
+                    Button("Fetch Data") {
+                        fetchData()
+                    }
+                    .padding(.trailing)
+                }
+                Text(message)
+                    .padding()
+                
             }
+            .frame(maxWidth: .infinity)
+            .clipped()
+            .padding(.bottom, 150)
         }
     }
     
@@ -28,6 +46,7 @@ struct ContentView: View {
                 if let decodedResponse = try? JSONDecoder().decode(NHLEdgePBPDataResponse.self, from: data) {
                     DispatchQueue.main.async {
                         self.message = decodedResponse.venue.venue
+                        self.gameid = String(decodedResponse.id)
                     }
                     return
                 }
